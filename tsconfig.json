@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "es2017",
+    "module": "commonjs",
+    "lib": ["es6"],
+    "allowJs": true,
+    "noEmit": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "removeComments": true,
+    "typeRoots": ["./node_modules/@types", "./src/@types"],
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,                                      
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@data/*": ["./src/data/*"],
+      "@entities/*": ["./src/entities/*"],
+      "@useCases/*": ["./src/useCases/*"],
+      "@application/*": ["./src/application/*"],
+    }                             
+  },
+  "include": ["src/**/*.ts"]
+}

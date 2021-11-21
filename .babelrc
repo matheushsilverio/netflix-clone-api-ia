@@ -1,0 +1,29 @@
+{
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "targets": {
+          "node": "current"
+        }
+      }
+    ],
+    "@babel/preset-typescript"
+  ],
+  "plugins": [
+    "babel-plugin-transform-typescript-metadata",
+    ["@babel/plugin-proposal-decorators", { "legacy": true }],
+    [
+      "module-resolver",
+      {
+        "alias": {
+          "@data": "./src/data",
+          "@useCases": "./src/useCases",
+          "@application": "./src/application",
+          "@entities": "./src/entities"
+        }
+      }
+    ]
+  ],
+  "ignore": ["**/*.spec.ts", "./server/@types/**/*"]
+}
