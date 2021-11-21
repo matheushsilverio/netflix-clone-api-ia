@@ -4,6 +4,10 @@ import Crypto from "@application/helpers/Crypto";
 import csv from "csv-parser";
 import fs from "fs";
 
+function randomIntFromInterval(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
 async function moviesSeed(knex: Knex): Promise<void> {
   const select = await knex("movies").select().limit(1);
   if (select.length > 0) {
@@ -53,29 +57,68 @@ async function moviesSeed(knex: Knex): Promise<void> {
 }
 
 async function usersSeed(knex: Knex): Promise<void> {
-  const select = await knex("users").select();
+  const select = await knex("users").select().limit(1);
   if (select.length > 0) {
     return;
   }
   const password = Crypto.encrypt("123");
 
-  const data = [
-    {
-      name: "Jhon Doe",
-      email: "test@test.com",
+  const data = [];
+
+  let a = 1;
+  while (a <= 10) {
+    data.push({
+      name: `Jhon Doe ${a}`,
+      email: `test${a}@test.com`,
       password,
-    },
-  ];
+    });
+    a++;
+  }
 
   Logger.debug("SEED", "User Seeds are running");
   await knex("users").insert(data);
   Logger.debug("SEED", `${data.length} user seeds has been completed`);
 }
 
+async function userRatesSeed(knex: Knex): Promise<void> {
+  const select = await knex("users_rate").select().limit(1);
+  if (select.length > 0) {
+    return;
+  }
+  const users = await knex("users").select("id");
+  const randomMovies = await knex("movies")
+    .select("id_movie")
+    .orderBy("year", "desc")
+    .orderByRaw("rand()")
+    .limit(40);
+
+  Logger.debug("SEED", "Users Rate Seeds are running");
+  for (let user of users) {
+    const newRatings = [];
+    const times_vote = randomIntFromInterval(10, 40);
+
+    let i = 0;
+    while (i < times_vote) {
+      newRatings.push({
+        id_user: user.id,
+        id_movie: randomMovies[i].id_movie,
+        rate: randomIntFromInterval(1, 5),
+      });
+
+      i++;
+    }
+
+    await knex("users_rate").insert(newRatings);
+  }
+
+  Logger.debug("SEED", `User Rate seeds has been completed`);
+}
+
 export async function seed(knex: Knex): Promise<void> {
   Logger.debug("DB", "Seeds are running");
   await Promise.all([moviesSeed(knex), usersSeed(knex)])
     .then(async () => {
+      await userRatesSeed(knex);
       Logger.debug("SEED", "All seed has been completed");
     })
     .catch((err) => {
