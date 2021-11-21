@@ -1,4 +1,5 @@
 import authMiddleware from "@application/middlewares/authMiddleware";
+import { getByCategoryController } from "@useCases/Movie/GetByCategory";
 import { authUserController } from "@useCases/User/AuthUser";
 import { createUserController } from "@useCases/User/CreateUser";
 import { Request, Response, Router } from "express";
@@ -17,6 +18,13 @@ router.post(
   "/authenticate/refresh-token",
   (request: Request, response: Response) =>
     authUserController.refreshToken(request, response)
+);
+
+router.get(
+  "/movies/:category",
+  authMiddleware,
+  (request: Request, response: Response) =>
+    getByCategoryController.handle(request, response)
 );
 
 export { router };
