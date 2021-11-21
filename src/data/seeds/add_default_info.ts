@@ -66,7 +66,7 @@ async function usersSeed(knex: Knex): Promise<void> {
   const data = [];
 
   let a = 1;
-  while (a <= 10) {
+  while (a <= 500) {
     data.push({
       name: `Jhon Doe ${a}`,
       email: `test${a}@test.com`,
@@ -88,20 +88,22 @@ async function userRatesSeed(knex: Knex): Promise<void> {
   const users = await knex("users").select("id");
   const randomMovies = await knex("movies")
     .select("id_movie")
+    .where("country", "like", "%USA%")
     .orderBy("year", "desc")
-    .orderByRaw("rand()")
-    .limit(40);
+    .orderBy("votes", "desc")
+    .limit(10000);
 
   Logger.debug("SEED", "Users Rate Seeds are running");
   for (let user of users) {
     const newRatings = [];
-    const times_vote = randomIntFromInterval(10, 40);
+    const times_vote = randomIntFromInterval(40, 1000);
 
     let i = 0;
     while (i < times_vote) {
+      const indexMovie = randomIntFromInterval(0, 9999);
       newRatings.push({
         id_user: user.id,
-        id_movie: randomMovies[i].id_movie,
+        id_movie: randomMovies[indexMovie].id_movie,
         rate: randomIntFromInterval(1, 5),
       });
 
