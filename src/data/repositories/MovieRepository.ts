@@ -33,4 +33,23 @@ export default class MovieRepository implements IMovieRepository {
 
     return MovieMapper.mapMany(query);
   }
+
+  async getById(id: number): Promise<Movie | undefined> {
+    const query = await this.connection("movies")
+      .select<MovieQueryResponse>(
+        "id_movie",
+        "imdb_title_id",
+        "title",
+        "year",
+        "date_published",
+        "genre",
+        "duration",
+        "avg_note",
+        "description"
+      )
+      .where("id_movie", id)
+      .first();
+
+    return MovieMapper.mapOne(query);
+  }
 }

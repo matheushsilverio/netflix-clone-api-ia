@@ -17,4 +17,18 @@ export default abstract class MovieMapper {
       });
     });
   }
+
+  static mapOne(query: MovieQueryResponse): Movie | undefined {
+    return new Movie({
+      id: query.id_movie,
+      imdbId: query.imdb_title_id,
+      title: query.title,
+      description: query.description,
+      genre: query.genre,
+      duration: Number(query.duration),
+      year: Number(query.year),
+      averageNote: query.avg_note,
+      datePublished: query.date_published,
+    });
+  }
 }

@@ -1,5 +1,6 @@
 import authMiddleware from "@application/middlewares/authMiddleware";
 import { getByCategoryController } from "@useCases/Movie/GetByCategory";
+import { getByIdController } from "@useCases/Movie/GetById";
 import { authUserController } from "@useCases/User/AuthUser";
 import { createUserController } from "@useCases/User/CreateUser";
 import { Request, Response, Router } from "express";
@@ -21,7 +22,14 @@ router.post(
 );
 
 router.get(
-  "/movies/:category",
+  "/movies/:id",
+  authMiddleware,
+  (request: Request, response: Response) =>
+    getByIdController.handle(request, response)
+);
+
+router.get(
+  "/movies/categories/:category",
   authMiddleware,
   (request: Request, response: Response) =>
     getByCategoryController.handle(request, response)
